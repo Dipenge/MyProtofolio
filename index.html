@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming | Dipenge Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --bg: #030303;
+            --text: #fafafa;
+            --card-bg: rgba(24, 24, 27, 0.4);
+            --border: rgba(255, 255, 255, 0.05);
+            --nav-bg: rgba(3, 3, 3, 0.7);
+        }
+
+        .light-mode {
+            --bg: #ffffff;
+            --text: #09090b;
+            --card-bg: rgba(244, 244, 245, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --nav-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            transition: background-color 0.5s ease, color 0.5s ease;
+            scroll-behavior: smooth; 
+            overflow-x: hidden; 
+            padding-bottom: 40px;
+        }
+
+        .gradient-text { background: linear-gradient(135deg, #3b82f6, #2dd4bf, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        nav { 
+            backdrop-filter: blur(12px); 
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border); 
+            transition: background-color 0.5s ease, border 0.5s ease;
+        }
+
+        .themed-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: all 0.5s ease;
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Carousel/Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-container:hover .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        .stack-card {
+            flex-shrink: 0;
+            padding: 1.5rem 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .github-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(12px, 1fr));
+            gap: 4px;
+        }
+        .contribution-box {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background: rgba(34, 197, 94, 0.05);
+        }
+        .contribution-box.high { background: #22c55e; }
+        .contribution-box.med { background: #166534; }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 8px 24px;
+            font-family: monospace;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            color: #3b82f6;
+            letter-spacing: 1px;
+        }
+
+        .terminal-window {
+            background: #0a0a0a;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #thank-you-msg { display: none; }
+    </style>
+</head>
+<body class="selection:bg-blue-500 selection:text-white">
+
+    <nav class="fixed top-0 w-full z-50 px-6 md:px-12 py-4 flex justify-between items-center">
+        <div class="text-xl font-extrabold tracking-tighter">Programmer <span class="text-blue-500">.</span>DEV</div>
+        <div class="hidden md:flex space-x-10 text-sm font-medium opacity-60 uppercase tracking-widest">
+            <a href="#work" class="hover:opacity-100 transition">Work</a>
+            <a href="#activity" class="hover:opacity-100 transition">Activity</a>
+            <a href="#contact" class="hover:opacity-100 transition">Contact</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="theme-toggle" class="p-2.5 rounded-full themed-card hover:scale-110 active:scale-95 transition-all">
+                <svg id="sun-icon" class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.243 3.05a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM14.243 16.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414zM10 18a1 1 0 01-1 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.757 16.95a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 10a1 1 0 011-1h1a1 1 0 110 2H4a1 1 0 01-1-1zM5.757 3.05a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM10 6a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                <svg id="moon-icon" class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+            </button>
+            <a href="https://wa.me/27683304621" class="hidden sm:block px-5 py-2 bg-blue-600 text-white text-xs font-bold rounded-full hover:bg-blue-700 transition-all">LET'S TALK</a>
+        </div>
+    </nav>
+
+    <main class="mt-44 px-8 md:px-24">
+        <header class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 reveal">
+            <div class="flex-1 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-6">
+                    <div class="px-4 py-1.5 text-xs font-semibold tracking-widest text-blue-500 uppercase bg-blue-500/10 rounded-full border border-blue-500/20">Cape Town, ZA</div>
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        <span class="text-[10px] font-bold text-green-500 uppercase tracking-tighter">Available for freelance</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl md:text-8xl font-extrabold mb-8 leading-[1.1] tracking-tight">Junior <span class="gradient-text">Software</span> Developer.</h1>
+                <p class="text-xl opacity-60 max-w-2xl mb-10">
+                    Motivated Junior Software Developer with a Bsc in Computer System. Hands-on experience with <span class="text-blue-500 font-bold">HTML5, CSS3, JS, React, Node.js, and MongoDB</span>.
+                </p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    <a href="https://raw.githubusercontent.com/Dipenge/MyProtofolio/main/Dipeng_Resume%20(1).pdf" download="Dipeng_Resume.pdf" class="inline-flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all font-bold text-sm tracking-widest uppercase">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Resume
+                    </a>
+                    <button onclick="navigator.clipboard.writeText('dipengejacob@gmail.com'); alert('Email Copied!')" class="inline-flex items-center gap-3 px-8 py-4 bg-blue-600/10 border border-blue-500/20 rounded-2xl hover:bg-blue-600/20 transition-all font-bold text-sm tracking-widest uppercase">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Copy Email
+                    </button>
+                </div>
+            </div>
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-[2.6rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <img src="https://raw.githubusercontent.com/Dipenge/TshabalalaImg/main/CPUTD4.jpg" alt="Dipenge" class="relative w-64 h-64 md:w-96 md:h-96 rounded-[2.5rem] object-cover object-top border-4 border-white/5 shadow-2xl">
+            </div>
+        </header>
+
+        <section id="work" class="mt-32 overflow-hidden reveal">
+            <div class="marquee-container relative flex">
+                <div class="animate-marquee whitespace-nowrap">
+                    <div class="stack-card"><span class="text-xl">⚛️</span> <span class="font-bold text-sm tracking-widest">REACT</span></div>
+                    <div class="stack-card"><span class="text-xl">🟢</span> <span class="font-bold text-sm tracking-widest">NODE.JS</span></div>
+                    <div class="stack-card"><span class="text-xl">🍃</span> <span class="font-bold text-sm tracking-widest">MONGODB</span></div>
+                    <div class="stack-card"><span class="text-xl">🔷</span> <span class="font-bold text-sm tracking-widest">TYPESCRIPT</span></div>
+                    <div class="stack-card"><span class="text-xl">🎨</span> <span class="font-bold text-sm tracking-widest">TAILWIND</span></div>
+                    <div class="stack-card"><span class="text-xl">🔥</span> <span class="font-bold text-sm tracking-widest">FIREBASE</span></div>
+                    <div class="stack-card"><span class="text-xl">⚛️</span> <span class="font-bold text-sm tracking-widest">REACT</span></div>
+                    <div class="stack-card"><span class="text-xl">🟢</span> <span class="font-bold text-sm tracking-widest">NODE.JS</span></div>
+                    <div class="stack-card"><span class="text-xl">🍃</span> <span class="font-bold text-sm tracking-widest">MONGODB</span></div>
+                    <div class="stack-card"><span class="text-xl">🔷</span> <span class="font-bold text-sm tracking-widest">TYPESCRIPT</span></div>
+                    <div class="stack-card"><span class="text-xl">🎨</span> <span class="font-bold text-sm tracking-widest">TAILWIND</span></div>
+                    <div class="stack-card"><span class="text-xl">🔥</span> <span class="font-bold text-sm tracking-widest">FIREBASE</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activity" class="mt-48 reveal">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="themed-card p-8 rounded-[2.5rem] border-t-2 border-green-500/30">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-2">GitHub Activity</h3>
+                        <a href="https://github.com/Dipenge" target="_blank" class="text-xs font-bold text-green-500 hover:underline">@DIPENGE →</a>
+                    </div>
+                    <div id="github-graph" class="github-grid"></div>
+                </div>
+                <div class="themed-card p-8 rounded-[2.5rem] border-t-2 border-blue-400/30">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-2">LinkedIn Activity</h3>
+                        <a href="https://www.linkedin.com/in/dipenge-jacob-339463257/" target="_blank" class="text-xs font-bold text-blue-400 hover:underline">@DIPENGE-JACOB →</a>
+                    </div>
+                    <div class="flex gap-1 h-12 items-end mb-4">
+                        <div class="flex-1 bg-blue-500/20 rounded-t-sm h-[40%] animate-pulse"></div>
+                        <div class="flex-1 bg-blue-500/40 rounded-t-sm h-[70%]"></div>
+                        <div class="flex-1 bg-blue-500/60 rounded-t-sm h-[50%]"></div>
+                        <div class="flex-1 bg-blue-500 rounded-t-sm h-[90%]"></div>
+                        <div class="flex-1 bg-blue-500/30 rounded-t-sm h-[30%]"></div>
+                        <div class="flex-1 bg-blue-500/80 rounded-t-sm h-[85%]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-48 reveal">
+            <div class="max-w-4xl mx-auto terminal-window rounded-xl overflow-hidden shadow-2xl">
+                <div class="bg-zinc-900 px-4 py-2 flex items-center justify-between border-b border-white/5">
+                    <div class="flex gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div><div class="w-3 h-3 rounded-full bg-yellow-500"></div><div class="w-3 h-3 rounded-full bg-green-500"></div></div>
+                    <span class="text-[10px] uppercase font-mono tracking-widest opacity-40">bash — dipenge@dev</span>
+                </div>
+                <div class="p-6 h-80 overflow-y-auto font-mono text-sm text-blue-400" id="terminal-body">
+                    <div class="mb-2 text-zinc-500">Last login: <span id="last-login"></span> on ttys001</div>
+                    <div id="terminal-output"></div>
+                    <div class="flex gap-2 mt-2">
+                        <span class="text-green-500">➜</span>
+                        <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-white w-full" autofocus autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="mt-48 pb-32 reveal">
+            <div class="max-w-4xl mx-auto themed-card p-12 rounded-[3rem] text-center">
+                <div id="form-wrap">
+                    <h2 class="text-5xl font-extrabold mb-8">Let's build.</h2>
+                    <form id="portfolio-form" action="https://formspree.io/f/meeejyle" method="POST" class="space-y-6 text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="text" name="name" placeholder="NAME" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 transition-all">
+                            <input type="email" name="email" placeholder="EMAIL" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 transition-all">
+                        </div>
+                        <textarea name="message" rows="4" placeholder="PROJECT DETAILS" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500 transition-all"></textarea>
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl hover:bg-blue-700 transition-all uppercase tracking-widest text-xs">Send Message</button>
+                    </form>
+                </div>
+
+                <div id="thank-you-msg" class="py-12">
+                    <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">Message Sent!</h2>
+                    <p class="opacity-60 max-w-xs mx-auto mb-8">Thank you, Dipenge has received your message and will get back to you shortly.</p>
+                    <button onclick="location.reload()" class="text-blue-500 font-bold uppercase text-xs tracking-widest hover:underline">Send Another</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="status-bar">
+        <div class="flex gap-4">
+            <span>SYS_STATUS: <span class="text-green-500">OPTIMAL</span></span>
+            <span class="hidden md:inline text-zinc-600">|</span>
+            <span class="hidden md:inline">CONTACT: dipengejacob@gmail.com</span>
+        </div>
+        <div>TIME: <span id="clock" class="text-white">00:00:00</span></div>
+    </div>
+
+    <script>
+        // FORM SUBMISSION
+        const form = document.getElementById('portfolio-form');
+        const formWrap = document.getElementById('form-wrap');
+        const thankYou = document.getElementById('thank-you-msg');
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                formWrap.style.display = 'none';
+                thankYou.style.display = 'block';
+                form.reset();
+            } else {
+                alert("Error sending message. Please try again.");
+            }
+        };
+
+        // TERMINAL LOGIC
+        const termInput = document.getElementById('terminal-input');
+        const termOutput = document.getElementById('terminal-output');
+        const termBody = document.getElementById('terminal-body');
+        document.getElementById('last-login').innerText = new Date().toDateString();
+
+        const commands = {
+            'help': 'Available: [github, linkedin, whoami, email, contact, clear]',
+            'whoami': 'Dipenge Tshabalala - Junior Software Developer based in Cape Town.',
+            'github': 'Opening GitHub...',
+            'linkedin': 'Opening LinkedIn...',
+            'email': 'dipengejacob@gmail.com',
+            'contact': 'Email: dipengejacob@gmail.com | WhatsApp: +27 68 330 4621',
+            'clear': 'CLEAR_CMD'
+        };
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const val = termInput.value.toLowerCase().trim();
+                if (!val) return;
+                const cmdLine = document.createElement('div');
+                cmdLine.innerHTML = `<span class="text-green-500">➜</span> <span class="text-white">${val}</span>`;
+                termOutput.appendChild(cmdLine);
+                const res = commands[val] || `command not found: ${val}`;
+                if (res === 'CLEAR_CMD') termOutput.innerHTML = '';
+                else {
+                    const resLine = document.createElement('div');
+                    resLine.className = 'text-blue-400 mb-2 mt-1';
+                    resLine.innerText = res;
+                    termOutput.appendChild(resLine);
+                }
+                if (val === 'github') window.open('https://github.com/Dipenge', '_blank');
+                if (val === 'linkedin') window.open('https://www.linkedin.com/in/dipenge-jacob-339463257/', '_blank');
+                termInput.value = '';
+                termBody.scrollTop = termBody.scrollHeight;
+            }
+        });
+
+        // GITHUB GRAPH & CLOCK
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB'); }, 1000);
+        const graph = document.getElementById('github-graph');
+        for (let i = 0; i < 91; i++) {
+            const box = document.createElement('div');
+            const level = Math.random();
+            box.className = 'contribution-box ' + (level > 0.8 ? 'high' : level > 0.4 ? 'med' : '');
+            graph.appendChild(box);
+        }
+
+        // THEME & REVEAL
+        document.getElementById('theme-toggle').addEventListener('click', () => { document.body.classList.toggle('light-mode'); });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
